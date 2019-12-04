@@ -69,4 +69,14 @@ describe('<lion-input-range>', () => {
     const parsedValue = el.parser('160');
     expect(typeof parsedValue).to.equal('number');
   });
+
+  it('is accessible', async () => {
+    const el = await fixture(`<lion-input-range label="range"></lion-input-range>`);
+    await expect(el).to.be.accessible();
+  });
+
+  it('is accessible when disabled', async () => {
+    const el = await fixture(`<lion-input-range label="range" disabled></lion-input-range>`);
+    await expect(el).to.be.accessible();
+  });
 });
