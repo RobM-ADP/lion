@@ -10,25 +10,29 @@ describe('<lion-input-range>', () => {
 
   it('displays the modelValue and unit', async () => {
     const el = await fixture(`
-      <ing-input-range .modelValue="${75}" unit="${`%`}"></ing-input-range>
+      <lion-input-range modelValue="${75}" unit="${`%`}"></lion-input-range>
     `);
-    expect(el.shadowRoot.querySelector('.input-range__value')).to.equal(75);
-    expect(el.shadowRoot.querySelector('.input-range__unit')).to.equal('%');
+    expect(el.shadowRoot.querySelector('.input-range__value').innerText).to.equal('75');
+    expect(el.shadowRoot.querySelector('.input-range__unit').innerText).to.equal('%');
   });
 
   // todo: define what to display
   it("displays '' when no modelValue", async () => {
     const el = await fixture(`
-      <ing-input-range></ing-input-range>
+      <lion-input-range></lion-input-range>
     `);
-    expect(el.shadowRoot.querySelector('.input-range__value')).to.equal('');
+    expect(el.shadowRoot.querySelector('.input-range__value').innerText).to.equal('');
   });
 
   it('displays 2 tick labels (min and max values) by default', async () => {
     const el = await fixture(`<lion-input-range min="100" max="200"></lion-input-range>`);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale').length).to.equal(2);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale')[0].innerText).to.equal(el.min);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale')[1].innerText).to.equal(el.max);
+    expect(el.shadowRoot.querySelectorAll('.input-range__limits span').length).to.equal(2);
+    expect(el.shadowRoot.querySelectorAll('.input-range__limits span')[0].innerText).to.equal(
+      el.min,
+    );
+    expect(el.shadowRoot.querySelectorAll('.input-range__limits span')[1].innerText).to.equal(
+      el.max,
+    );
   });
 
   it('update min and max attributes when min and max property change', async () => {
