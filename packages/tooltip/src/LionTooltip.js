@@ -3,6 +3,43 @@ import { OverlayMixin } from '@lion/overlays';
 import '../lion-tooltip-arrow.js';
 
 export class LionTooltip extends OverlayMixin(LitElement) {
+
+  constructor() {
+    super();
+    this.mouseActive = false;
+    this.keyActive = false;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._overlayContentNode.setAttribute('role', 'tooltip');
+  }
+
+  firstUpdated(...args) {
+    super.firstUpdated(...args);
+
+    this.__setupArrowElement();
+  }
+
+  render() {
+    return html`
+      <slot name="invoker"></slot>
+      <slot name="content"></slot>
+      <slot name="arrow"></slot>
+      <slot name="_overlay-shadow-outlet"></slot>
+    `;
+  }
+
+  __setupArrowElement() {
+    this.__arrowElement = this.querySelector('[slot~=arrow');
+    if (!this.__arrowElement) {
+      return;
+    }
+    this.__arrowElement.setAttribute('x-arrow', true);
+    this._overlayContentNodeWrapper.appendChild(this.__arrowElement);
+  }
+
+
   // eslint-disable-next-line class-methods-use-this
   _defineOverlayConfig() {
     return {
@@ -19,80 +56,37 @@ export class LionTooltip extends OverlayMixin(LitElement) {
             enabled: true,
           },
         },
+        onCreate: (data) => {
+          this.__syncFromPopperState(data);
+        },
+        onUpdate: (data) => {
+          this.__syncFromPopperState(data);
+        },
       },
     };
   }
 
-  constructor() {
-    super();
-    this.mouseActive = false;
-    this.keyActive = false;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._overlayContentNode.setAttribute('role', 'tooltip');
-  }
-
-  firstUpdated(...args) {
-    super.firstUpdated(...args);
-    this._overlayContentNode.appendChild(this.shadowRoot.querySelector('lion-tooltip-arrow'));
-
-    this.__getArrowHeight = async () => {
-      this._overlayCtrl.removeEventListener('show', this.__getArrowHeight);
-
-      const arrow = this._overlayContentNode.querySelector('lion-tooltip-arrow');
-      arrow._updateArrowStyles();
-    };
-
-    this._overlayCtrl.addEventListener('show', this.__getArrowHeight);
-  }
-
-  render() {
-    return html`
-      <slot name="invoker"></slot>
-      <slot name="content"></slot>
-      <lion-tooltip-arrow x-arrow></lion-tooltip-arrow>
-      <slot name="_overlay-shadow-outlet"></slot>
-    `;
+  __syncFromPopperState(data) {
+    if (!data) {
+      return;
+    }
+    if (this.__arrowElement
+      && data.placement !== this.__arrowElement.placement) {
+      this.__arrowElement.placement = data.placement;
+    }
   }
 
   _setupOpenCloseListeners() {
-    this.__resetActive = () => {
-      this.mouseActive = false;
-      this.keyActive = false;
-    };
-
-    this.__showMouse = () => {
-      if (!this.keyActive) {
-        this.mouseActive = true;
-        this.opened = true;
-      }
-    };
-
-    this.__hideMouse = () => {
-      if (!this.keyActive) {
-        this.opened = false;
-      }
-    };
-
-    this.__showKey = () => {
-      if (!this.mouseActive) {
-        this.keyActive = true;
-        this.opened = true;
-      }
-    };
-
-    this.__hideKey = () => {
-      if (!this.mouseActive) {
-        this.opened = false;
-      }
-    };
-
+    this.__resetActive = this.__resetActive.bind(this);
     this._overlayCtrl.addEventListener('hide', this.__resetActive);
+
     this.addEventListener('mouseenter', this.__showMouse);
     this.addEventListener('mouseleave', this.__hideMouse);
+
+    this.__showKey = this.__showKey.bind(this);
     this._overlayInvokerNode.addEventListener('focusin', this.__showKey);
+
+    this.__hideKey = this.__hideKey.bind(this);
     this._overlayInvokerNode.addEventListener('focusout', this.__hideKey);
   }
 
@@ -103,4 +97,35 @@ export class LionTooltip extends OverlayMixin(LitElement) {
     this._overlayInvokerNode.removeEventListener('focusin', this._showKey);
     this._overlayInvokerNode.removeEventListener('focusout', this._hideKey);
   }
+
+  __resetActive() {
+    this.mouseActive = false;
+    this.keyActive = false;
+  };
+
+  __showMouse() {
+    if (!this.keyActive) {
+      this.mouseActive = true;
+      this.opened = true;
+    }
+  };
+
+  __hideMouse() {
+    if (!this.keyActive) {
+      this.opened = false;
+    }
+  };
+
+  __showKey() {
+    if (!this.mouseActive) {
+      this.keyActive = true;
+      this.opened = true;
+    }
+  };
+
+  __hideKey() {
+    if (!this.mouseActive) {
+      this.opened = false;
+    }
+  };
 }

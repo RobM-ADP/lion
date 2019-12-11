@@ -140,6 +140,10 @@ export const OverlayMixin = dedupeMixin(
         return contentNode || this._cachedOverlayContentNode;
       }
 
+      get _overlayContentNodeWrapper() {
+        return this._overlayContentNode.parentElement;
+      }
+
       _setupOverlayCtrl() {
         this._overlayCtrl = this._defineOverlay({
           contentNode: this._overlayContentNode,
