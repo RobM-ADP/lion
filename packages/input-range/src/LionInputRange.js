@@ -2,7 +2,6 @@
 import { LocalizeMixin, formatNumber } from '@lion/localize';
 import { FieldCustomMixin } from '@lion/field';
 import { LionInput } from '@lion/input';
-import { MinMaxNumber } from '@lion/validate/index.js';
 import { html } from '@lion/core';
 
 /**
@@ -21,9 +20,6 @@ export class LionInputRange extends FieldCustomMixin(LocalizeMixin(LionInput)) {
         type: Number,
         reflect: true,
       },
-      ticks: {
-        type: Array,
-      },
     };
   }
 
@@ -35,9 +31,6 @@ export class LionInputRange extends FieldCustomMixin(LocalizeMixin(LionInput)) {
   constructor() {
     super();
     this.parser = value => parseFloat(value);
-    if (this.min && this.max) {
-      this.defaultValidators.push(new MinMaxNumber({ min: this.min, max: this.max }));
-    }
   }
 
   updated(changedProperties) {
@@ -57,10 +50,6 @@ export class LionInputRange extends FieldCustomMixin(LocalizeMixin(LionInput)) {
 
     if (changedProperties.has('step')) {
       this._inputNode.step = this.step;
-    }
-
-    if (changedProperties.has('ticks')) {
-      this._inputNode.ticks = this.ticks;
     }
   }
 
@@ -85,14 +74,10 @@ export class LionInputRange extends FieldCustomMixin(LocalizeMixin(LionInput)) {
     return html`
       <div class="input-group__input">
         <slot name="input"></slot>
-        ${!this.ticks || this.ticks.numberOfLabels !== 0
-          ? html`
-              <div class="input-range__limits">
-                <span>${formatNumber(this.min)}</span>
-                <span>${formatNumber(this.max)}</span>
-              </div>
-            `
-          : ''}
+        <div class="input-range__limits">
+          <span>${formatNumber(this.min)}</span>
+          <span>${formatNumber(this.max)}</span>
+        </div>
       </div>
     `;
   }

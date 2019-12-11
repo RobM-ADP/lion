@@ -44,26 +44,9 @@ describe('<lion-input-range>', () => {
     expect(el._inputNode.max).to.equal(el.max);
   });
 
-  it.skip('can change the amount of tick labels', async () => {
-    const el = await fixture(
-      `<lion-input-range min="100" max="200" .ticks="{{numberOfLabels: 3}}"></lion-input-range>`,
-    );
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale').length).to.equal(3);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale')[0].innerText).to.equal(100);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale')[1].innerText).to.equal(150);
-    expect(el.shadowRoot.querySelectorAll('.input-range__scale')[2].innerText).to.equal(200);
-  });
-
   it('can hide the tick labels', async () => {
     const el = await fixture(`<lion-input-range min="100" max="200" noLabels"></lion-input-range>`);
     expect(el.shadowRoot.querySelectorAll('.input-range__scale').length).to.equal(0);
-  });
-
-  it.skip('can add ticks', async () => {
-    const el = await fixture(
-      `<lion-input-range min="100" max="200" .ticks="{{tickStep: 5}}"></lion-input-range>`,
-    );
-    expect(el.shadowRoot.querySelectorAll('.input-range__ticks').length).to.equal(20);
   });
 
   it('parser method should return a value parsed into a number format', async () => {

@@ -61,23 +61,6 @@ storiesOf('Forms | Input Range', module)
     `,
   )
   .add(
-    'Help text',
-    () => html`
-      <style>
-        ${rangeDemoStyle}
-      </style>
-
-      <lion-input-range
-        class="demo-range"
-        min="200"
-        max="500"
-        modelValue="300"
-        label="Input range"
-        help-text="A help text can show additional hints"
-      ></lion-input-range>
-    `,
-  )
-  .add(
     'With steps',
     () => html`
       <style>
