@@ -16,14 +16,6 @@ describe('<lion-input-range>', () => {
     expect(el.shadowRoot.querySelector('.input-range__unit').innerText).to.equal('%');
   });
 
-  // todo: define what to display
-  it("displays '' when no modelValue", async () => {
-    const el = await fixture(`
-      <lion-input-range></lion-input-range>
-    `);
-    expect(el.shadowRoot.querySelector('.input-range__value').innerText).to.equal('');
-  });
-
   it('displays 2 tick labels (min and max values) by default', async () => {
     const el = await fixture(`<lion-input-range min="100" max="200"></lion-input-range>`);
     expect(el.shadowRoot.querySelectorAll('.input-range__limits span').length).to.equal(2);
